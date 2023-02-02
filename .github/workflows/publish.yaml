@@ -12,7 +12,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build the hello-docker Docker image
-        run:
+        run: |
           docker build . --tag ghcr.io/console/myimg:latest
           docker run ghcr.io/console/myimg:latest
           docker push ghcr.io/console/myimg:latest
