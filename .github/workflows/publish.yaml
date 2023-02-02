@@ -13,7 +13,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build the hello-docker Docker image
         run:
-          docker build -t ghcr.io/mrpagex/myimg:latest
+          docker build -t ghcr.io/mrpagex/myimg:latest .
           docker run ghcr.io/mrpagex/myimg:latest
           docker push ghcr.io/mrpagex/myimg:latest
           
