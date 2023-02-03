@@ -1,19 +1,27 @@
 name: publish
-on: [push]
+on:
+  workflow_dispatch:
+
 jobs:
-  publish-hello-docker-image:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+      
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
+          login-server: ghcr.io
           username: ${{ secrets.GH_PACKAGES_USER }}
           password: ${{ secrets.GH_PACKAGES_TOKEN }}
-      - name: Build the hello-docker Docker image
+
+      - name: Build Docker image
         run: |
-          docker build . --tag ghcr.io/mrpagex/console/myimg:latest
-          docker run ghcr.io/mrpagex/console/myimg:latest
-          docker push ghcr.io/mrpagex/console/myimg:latest
+          docker build . --file Dockerfile --tag ghcr.io/mrpagex/console:${{ github.sha }}
+          docker tag ghcr.io/mrpagex/console:${{ github.sha }} ghcr.io/mrpagex/console:latest
+
+      - uses: Docker/container-scan@v0
+        with:
+          image-name: ghcr.io/mrpagex/console:latest
           
