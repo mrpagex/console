@@ -1,0 +1,27 @@
+name: publish
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GH_PACKAGES_USER }}
+          password: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+      - name: Docker Build image
+        run: |
+          docker build . --file Dockerfile --tag ghcr.io/mrpagex/console:${{ github.sha }}
+          docker tag ghcr.io/mrpagex/console:${{ github.sha }} ghcr.io/mrpagex/console:latest
+
+      - name: Docker Push
+        run: |
+         docker push ghcr.io/mrpagex/console:${{ github.sha }}
+         docker push ghcr.io/mrpagex/console:latest
+          
